@@ -1,6 +1,7 @@
 # TOS/7 
  
 TOS/7 Embedded System
+POSIX.1-1988
 
 Userland in TOS/7 is not an ecosystem.
 It is a toolkit.
@@ -190,7 +191,6 @@ Status:   Active Development (Pre-release)
 Goal:     Static UNIX Kernel with POSIX Core
 
 Features:
-  • POSIX.1-1988 userland
   • Static ELF kernel and userland
   • Minimal system calls: execve, fork, waitpid, exit, open, read, write
   • Flat VFS (ext2), block driver, and basic inode I/O
