@@ -1,1 +1,1 @@
-# TOS-7
+# TOS-7 UNICS Embedded POSIX.1-1988 
