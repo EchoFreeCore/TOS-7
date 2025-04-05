@@ -1,0 +1,1 @@
+void vmm_destroy_user_range(pagetable_t pt, uintptr_t start, uintptr_t end);

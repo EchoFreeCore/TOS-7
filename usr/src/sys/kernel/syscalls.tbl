@@ -1,0 +1,50 @@
+// === I/O ===
+SYS(3, 3, read, (int fd, void* buf, size_t count))
+SYS(4, 3, write, (int fd, const void* buf, size_t count))
+SYS(5, 3, open, (const char* path, int flags, mode_t mode))
+SYS(6, 1, close, (int fd))
+SYS(41, 1, dup, (int oldfd))
+SYS(90, 2, dup2, (int oldfd, int newfd))
+SYS(42, 1, pipe, (int pipefd[2]))
+SYS(199, 3, lseek, (int fd, off_t offset, int whence))
+SYS(33, 2, access, (const char* path, int mode))
+
+// === File status ===
+SYS(188, 2, stat, (const char* path, struct stat* buf))
+SYS(189, 2, fstat, (int fd, struct stat* buf))
+
+// === Process ===
+SYS(2, 0, fork, (void))
+SYS(59, 3, execve, (const char* path, char* const argv[], char* const envp[]))
+SYS(1, 1, _exit, (int status))
+SYS(7, 1, wait, (int* status))
+SYS(20, 0, getpid, (void))
+SYS(39, 0, getppid, (void))
+
+// === Signals ===
+SYS(37, 2, kill, (pid_t pid, int sig))
+SYS(46, 3, sigaction, (int signum, const struct sigaction* act, struct sigaction* oldact))
+SYS(48, 2, sigprocmask, (int how, const sigset_t* set))
+
+// === Directory and Filesystem ===
+SYS(12, 1, chdir, (const char* path))
+SYS(15, 2, chmod, (const char* path, mode_t mode))
+SYS(10, 1, unlink, (const char* path))
+SYS(136, 2, mkdir, (const char* path, mode_t mode))
+SYS(137, 1, rmdir, (const char* path))
+SYS(24, 0, getuid, (void))
+SYS(47, 0, getgid, (void))
+SYS(60, 1, umask, (mode_t mask))
+SYS(16, 3, chown, (const char* path, uid_t owner, gid_t group))
+
+// === Time ===
+SYS(116, 1, gettimeofday, (struct timeval* tv))
+SYS(43, 1, times, (struct tms* buf))
+SYS(27, 1, alarm, (unsigned int seconds))
+SYS(29, 0, pause, (void))
+SYS(37, 1, sleep, (unsigned int seconds))
+
+// === Misc ===
+SYS(326, 2, getcwd, (char* buf, size_t size))
+SYS(222, 6, mmap, void*, (void* addr, size_t len, int prot, int flags, int fd, off_t offset))
+SYS(223, 2, munmap, int, (void* addr, size_t len))
