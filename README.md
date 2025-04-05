@@ -88,7 +88,7 @@ FILE SYSTEM AND VFS
 The VFS layer is implemented in `vfs.c`. It manages file descriptors and
 dispatches to underlying file systems or devices.
 
-The default file system is a static minix-like FS implemented in `vfs_minixfs.c`.
+The default file system is a EXT2 FS implemented.
 
 Inodes, directory entries, and block I/O are handled explicitly, with no
 dynamically loaded modules.
@@ -309,7 +309,6 @@ Philosophy: Simplicity is the ultimate sophistication.
 3. FILE SYSTEM
 -------------------------
 
-- [ ] Enhance MinixFS: support long filenames and symlinks
 - [ ] Add write caching and inode journaling (optional)
 - [ ] Implement `fsck` tool for recovery
 - [ ] Support mounting root FS from block device
@@ -480,10 +479,9 @@ We remove everything that is not essential to control.
 │           ├── fs/
 │           │   ├── devfs.c
 │           │   ├── devfs.h
-│           │   ├── minix_fs.c
+│           │   ├── ext2/
 │           │   ├── vfs.c
-│           │   ├── vfs.h
-│           │   └── vfs_minixfs.h
+│           │   └── vfs.h
 │           ├── include/
 │           │   └── trap_frame.h
 │           ├── init/
