@@ -18,4 +18,21 @@ int getchar(void);
 int puts(const char* s);
 char* gets(char* s);
 
+FILE *fopen(const char *filename, const char *mode);
+int fclose(FILE *stream);
+size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);
+size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream);
+int fseek(FILE *stream, long offset, int whence);
+long ftell(FILE *stream);
+void rewind(FILE *stream);
+int fprintf(FILE *stream, const char *format, ...);
+int fscanf(FILE *stream, const char *format, ...);
+int printf(const char *format, ...);
+int scanf(const char *format, ...);
+int getchar(void);
+int putchar(int c);
+char *gets(char *s);
+int puts(const char *s);
+void perror(const char *s);
+
 #endif /* _STDIO_H */
