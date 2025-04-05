@@ -18,5 +18,9 @@ struct tm {
 time_t time(time_t* t);
 double difftime(time_t end, time_t start);
 char* ctime(const time_t* timep);
+struct tm *gmtime(const time_t *timep);
+struct tm *localtime(const time_t *timep);
+unsigned int sleep(unsigned int seconds);
+unsigned int alarm(unsigned int seconds);
 
 #endif /* _TIME_H */

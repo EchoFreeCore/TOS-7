@@ -10,5 +10,8 @@ size_t strlen(const char* s);
 char* strcpy(char* dest, const char* src);
 char* strcat(char* dest, const char* src);
 int strcmp(const char* s1, const char* s2);
+char *strchr(const char *s, int c);
+char *strrchr(const char *s, int c);
+char *strstr(const char *haystack, const char *needle);
 
 #endif /* _STRING_H */
