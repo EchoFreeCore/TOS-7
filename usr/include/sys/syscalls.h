@@ -1,10 +1,10 @@
-ifndef _SYSCALL_WRAPPER_H
+#ifndef _SYSCALL_WRAPPER_H
 #define _SYSCALL_WRAPPER_H
 
 #include <stdint.h>
 #include <sys/types.h>
 #include <sys/syscall.h>
-#include "syscall.h" // din inline asm syscall()
+#include "syscall.h"
 
 #define SYS0(NUM, NAME, RET, ARGS, CALL) \
 RET NAME ARGS { return (RET) syscall(NUM, 0, 0, 0, 0, 0, 0); }

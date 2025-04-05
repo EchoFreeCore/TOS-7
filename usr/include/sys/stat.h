@@ -17,10 +17,31 @@ struct stat {
     time_t    st_ctime;
 };
 
-int stat(const char *pathname, struct stat *statbuf);
-int fstat(int fd, struct stat *statbuf);
-int chmod(const char *pathname, mode_t mode);
-int chown(const char *pathname, uid_t owner, gid_t group);
-int link(const char *oldpath, const char *newpath);
+#define S_IFMT  0170000
+#define S_IFREG 0100000
+#define S_IFDIR 0040000
+#define S_IFCHR 0020000
+#define S_IFBLK 0060000
+#define S_IFIFO 0010000
 
-#endif // _SYS_STAT_H
+#define S_ISUID 0004000
+#define S_ISGID 0002000
+
+#define S_IRWXU 00700
+#define S_IRUSR 00400
+#define S_IWUSR 00200
+#define S_IXUSR 00100
+
+#define S_ISDIR(m)  (((m) & S_IFMT) == S_IFDIR)
+#define S_ISREG(m)  (((m) & S_IFMT) == S_IFREG)
+
+int stat(const char* pathname, struct stat* buf);
+int fstat(int fd, struct stat* buf);
+int chmod(const char* path, mode_t mode);
+mode_t umask(mode_t mask);
+int mkdir(const char* pathname, mode_t mode);
+
+
+
+
+
