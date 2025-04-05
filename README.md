@@ -1,8 +1,8 @@
-# TOS-7 
+# TOS/7 
  
-TOS-7 Embedded System
+TOS/7 Embedded System
 
-Userland in TOS-7 is not an ecosystem.
+Userland in TOS/7 is not an ecosystem.
 It is a toolkit.
 
 A set of static tools — understandable, maintainable, rebuildable.
@@ -16,11 +16,11 @@ speak via file descriptors, and don’t overstep.
 OVERVIEW
 --------------------------
 
-This document outlines the staged release progression of TOS-7, a minimal
+This document outlines the staged release progression of TOS/7, a minimal
 UNIX-inspired operating system with a focus on clarity, static linkage, 
 manual simplicity, and research-grade transparency.
 
-TOS-7 is not a clone, nor a reimplementation — it is a new UNIX-like 
+TOS/7 is not a clone, nor a reimplementation — it is a new UNIX-like 
 kernel and userland created in the spirit of V6, V7, and Research V10, 
 reborn with modern toolchains and retro engineering intent.
 
@@ -42,7 +42,7 @@ NOTES:
 - No dynamic linking. No kernel modules. No config files.
 - If it cannot be explained on a whiteboard, it is not here.
 
-TOS-X is a reaction to complexity.
+TOS/7 is a reaction to complexity.
 It is a statement that clarity still matters.
 
 --------------------------
@@ -75,7 +75,7 @@ system timer (scheduler tick).
 MEMORY MANAGEMENT
 --------------------------
 
-TOS-7 uses a page-table based MMU design.
+TOS/7 uses a page-table based MMU design.
 
     - Kernel heap is allocated via `kmalloc.c`
     - User space memory via `brk()` and `mmap()`
@@ -125,7 +125,7 @@ All device I/O is synchronous and buffered within the kernel
 SCHEDULER
 --------------------------
 
-TOS-X supports preemptive multithreading, using a fixed-priority, multi-class
+TOS/7 supports preemptive multithreading, using a fixed-priority, multi-class
 scheduler.
 
 There are three classes:
@@ -185,7 +185,7 @@ preferred over abstraction.
 
 ---
 
-VERSION: TOS-7
+VERSION: TOS/7
 Status:   Active Development (Pre-release)
 Goal:     Static UNIX Kernel with POSIX Core
 
@@ -201,11 +201,11 @@ Features:
   • Manual memory allocation (brk/sbrk)
 
 Marker:
-  /etc/tos-release → "TOS-7 (2025) — Static Core"
+  /etc/tos-release → "TOS/7 (2025) — Static Core"
 
 ---
 
-VERSION: TOS-7
+VERSION: TOS/7
 Status:   Stable Core (Future milestone)
 Goal:     POSIX Kernel Subset with Userland
 
@@ -221,7 +221,7 @@ Additions:
 
 ---
 
-VERSION: TOS-8
+VERSION: TOS/8
 Status:   Next Generation System (Optional)
 Goal:     Dynamic Linking, Signals, and Paging
 
@@ -251,9 +251,9 @@ Additions:
 VERSIONING POLICY
 --------------------------
 
-• TOS-7: development and research track  
-• TOS-8: stable ABI release for userland compatibility  
-• TOS-9 and beyond: maintain minimalism, introduce capability incrementally  
+• TOS/7: development and research track  
+• TOS/8: stable ABI release for userland compatibility  
+• TOS/9 and beyond: maintain minimalism, introduce capability incrementally  
 • Syscall table is append-only, compatible with FreeBSD ABI numbers
 
 --------------------------
@@ -275,11 +275,11 @@ END OF RELEASE_PLAN.txt
 
 
 
-TOS-X KERNEL — TODO LIST
+TOS/7 KERNEL — TODO LIST
 -------------------------
 Appendix G: "Future Work"
 Document version: April 1983 (or so we pretend)
-System: TOS-X 0.1-ALPHA
+System: TOS/7 0.1-ALPHA
 Philosophy: Simplicity is the ultimate sophistication.
 
 -------------------------
@@ -376,13 +376,13 @@ Philosophy: Simplicity is the ultimate sophistication.
 - [ ] Remote TTY over serial (like early Unix terminals)
 - [ ] `ptrace()`-like minimal debugger interface
 - [ ] Time-traveling debugger like rr (just dreaming...)
-- [ ] Rebuild UNIX v7 userland on top of TOS-X (for science)
+- [ ] Rebuild UNIX v7 userland on top of TOS/7 (for science)
 
 -------------------------
 FINAL NOTE
 -------------------------
 
-TOS-X is not a clone of UNIX.
+TOS/7 is not a clone of UNIX.
 It is UNIX in spirit — minimal, clean, readable, and buildable
 by one person with a text editor and a dream.
 
