@@ -1,0 +1,32 @@
+# /etc/rc - TOS-X bootstrap script
+# UNIX-style startup in PDP/V7 tradition
+
+PATH=/bin:/usr/bin
+export PATH
+
+echo "TOS-X UNIX SYSTEM (c)2025 – BSD 3-Clause License" >/dev/console
+
+echo "Cleaning /etc and /tmp state..." >/dev/console
+rm -f /etc/mtab
+> /etc/utmp
+
+echo "Mounting user filesystem..." >/dev/console
+mount /dev/root /usr
+
+rm -f /usr/spool/lpd/lock
+rm -f /usr/tmp/*
+rm -f /tmp/*
+
+# Optional: Enable accounting
+# accton /usr/adm/acct
+
+# Start background disk update daemon
+/etc/update &
+
+# Show date to console
+date >/dev/console
+
+# Start cron daemon
+/etc/cron &
+
+echo "System ready." >/dev/console
