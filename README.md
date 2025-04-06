@@ -1,15 +1,5 @@
 #TOS-7
 
-TOS-7 is not an ecosystem
-It is UNIX as it was meant to be:
-A small number of well-crafted programs that work together,
-speak via file descriptors, and don’t overstep.
-
---------------------------
-OVERVIEW
---------------------------
-
-This document outlines the staged release progression of TOS-7, a minimal
 UNIX-inspired operating system with a focus on clarity, static linkage, 
 manual simplicity, and research-grade transparency.
 
