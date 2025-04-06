@@ -15,6 +15,7 @@ void cpu_init(void);
 void cpu_halt(void);
 void cpu_enter_privileged(void);
 void cpu_enter_user(uint64_t user_sp, uint64_t entry_pc);
+int  this_cpu(void);
 
 // ====================================
 // MMU Control
