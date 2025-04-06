@@ -1,0 +1,1 @@
+char* strncat(char* dest, const char* src, size_t n) {    char* d = dest;    while (*d != '\0') {        d++;    }    size_t i;    for (i = 0; i < n && src[i] != '\0'; ++i) {        d[i] = src[i];    }    if (i < n) {        d[i] = '\0';    }    else {        d[n - 1] = '\0';        return dest;    }
