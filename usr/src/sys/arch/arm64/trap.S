@@ -122,3 +122,37 @@ handle_serror_el0:
 .global handle_sync_el1
 handle_sync_el1:
     b handle_irq_el1
+
+.global context_restore_and_eret
+.type context_restore_and_eret, %function
+
+// x0 = trap_frame_t*
+context_restore_and_eret:
+    mov x1, x0               // spara pointer
+
+    ldp x2,  x3,  [x1, #( 0*8)]
+    ldp x4,  x5,  [x1, #( 2*8)]
+    ldp x6,  x7,  [x1, #( 4*8)]
+    ldp x8,  x9,  [x1, #( 6*8)]
+    ldp x10, x11, [x1, #( 8*8)]
+    ldp x12, x13, [x1, #(10*8)]
+    ldp x14, x15, [x1, #(12*8)]
+    ldp x16, x17, [x1, #(14*8)]
+    ldp x18, x19, [x1, #(16*8)]
+    ldp x20, x21, [x1, #(18*8)]
+    ldp x22, x23, [x1, #(20*8)]
+    ldp x24, x25, [x1, #(22*8)]
+    ldp x26, x27, [x1, #(24*8)]
+    ldp x28, x29, [x1, #(26*8)]
+    ldr x30,       [x1, #(30*8)]
+
+    ldr x2, [x1, #(31*8)]
+    msr sp_el0, x2
+
+    ldr x2, [x1, #(32*8)]
+    msr elr_el1, x2
+
+    ldr x2, [x1, #(33*8)]
+    msr spsr_el1, x2
+
+    eret
