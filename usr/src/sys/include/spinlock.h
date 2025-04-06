@@ -2,22 +2,27 @@
 #define SPINLOCK_H
 
 #include <stdint.h>
-#include <stdbool.h>
 
-typedef volatile int spinlock_t;
+// Vanlig spinlock
+typedef struct {
+    volatile uint32_t lock;
+} spinlock_t;
 
-static inline void spinlock_init(spinlock_t *lock) {
-    *lock = 0;
-}
+#define SPINLOCK_INIT {0}
 
-static inline void spin_lock(spinlock_t *lock) {
-    while (__sync_lock_test_and_set(lock, 1)) {
-        while (*lock);
-    }
-}
+void spinlock_acquire(spinlock_t *lock);
+void spinlock_release(spinlock_t *lock);
+int  spinlock_try(spinlock_t *lock);
 
-static inline void spin_unlock(spinlock_t *lock) {
-    __sync_lock_release(lock);
-}
+// IRQ-säker spinlock
+typedef struct {
+    volatile uint32_t lock;
+    uint32_t irq_flags;
+} irqspinlock_t;
+
+#define IRQSPINLOCK_INIT {0, 0}
+
+void irqspinlock_acquire(irqspinlock_t *lock);
+void irqspinlock_release(irqspinlock_t *lock);
 
 #endif
