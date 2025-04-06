@@ -1,8 +1,10 @@
 #include "kmalloc.h"
 #include "pmm.h"
-#include "vmm.h"
+#include "mmu.h"
 #include "panic.h"
 #include <string.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #define KMAGIC 0xCAFEBABE
 #define NODE_PAGE_SIZE 0x1000
@@ -10,8 +12,8 @@
 typedef struct KmallocNode {
     struct KmallocNode* next;
     struct KmallocNode* prev;
-    uint32_t start;
-    uint32_t size;
+    uintptr_t start;
+    size_t size;
     int is_free;
     uint32_t magic;
 } KmallocNode;
@@ -25,18 +27,23 @@ static KmallocNode* node_arena = NULL;
 static size_t node_arena_cap = 0;
 static size_t node_arena_used = 0;
 
-static inline uint32_t align_up(uint32_t val, uint32_t align) {
+static PageTable* kmalloc_page_table = NULL;
+
+static inline uintptr_t align_up(uintptr_t val, uintptr_t align) {
     return (val + align - 1) & ~(align - 1);
 }
 
 static void expand_node_arena(void) {
-    uintptr_t page = pmm_alloc_page();
-    if (!page) panic("kmalloc_v2: out of node memory");
+    uintptr_t phys = pmm_alloc_page();
+    if (!phys) panic("kmalloc: out of node memory");
 
-    vmm_map_kernel(page, page, PAGE_PRESENT | PAGE_RW);
+    uintptr_t virt = phys; // identitetsmappning
+    mmu_map(kmalloc_page_table->root, virt, phys, PTE_VALID | PTE_WRITE);
+
     if (!node_arena) {
-        node_arena = (KmallocNode*)page;
+        node_arena = (KmallocNode*)virt;
     }
+
     node_arena_cap += NODE_PAGE_SIZE / sizeof(KmallocNode);
 }
 
@@ -76,11 +83,12 @@ static void try_merge(KmallocNode* node) {
     }
 }
 
-void kmalloc_init(uintptr_t heap_base, size_t heap_size) {
+void kmalloc_init(uintptr_t heap_base, size_t heap_size, PageTable* pt) {
     heap_break = heap_base;
     heap_end = heap_base + heap_size;
+    kmalloc_page_table = pt;
 
-    expand_node_arena(); // init första sidan med noder
+    expand_node_arena();
 
     KmallocNode* n = alloc_node();
     n->start = heap_base;
@@ -102,8 +110,8 @@ static void* internal_alloc(size_t size, size_t align) {
             continue;
         }
 
-        uint32_t aligned_start = align_up(current->start, align);
-        uint32_t padding = aligned_start - current->start;
+        uintptr_t aligned_start = align_up(current->start, align);
+        size_t padding = aligned_start - current->start;
 
         if (current->size >= padding + size) {
             if (padding > 0) {
@@ -137,19 +145,22 @@ static void* internal_alloc(size_t size, size_t align) {
 
             current->is_free = 0;
 
-            // Map backing pages
+            // Map backing pages via mmu if not mapped
             for (uintptr_t addr = current->start; addr < current->start + current->size; addr += PAGE_SIZE) {
-                if (!vmm_is_mapped(addr))
-                    vmm_map_kernel(addr, pmm_alloc_page(), PAGE_PRESENT | PAGE_RW);
+                if (!mmu_is_valid(virt_to_phys(kmalloc_page_table->root, addr))) {
+                    uintptr_t phys = pmm_alloc_page();
+                    if (!phys) panic("kmalloc: out of physical memory");
+                    mmu_map(kmalloc_page_table->root, addr, phys, PTE_VALID | PTE_WRITE);
+                }
             }
 
-            return (void*)(uintptr_t)current->start;
+            return (void*)current->start;
         }
 
         current = current->next;
     }
 
-    panic("kmalloc_v2: out of memory");
+    panic("kmalloc: out of memory");
     return NULL;
 }
 
@@ -183,14 +194,13 @@ void kfree(void* ptr) {
         n = n->next;
     }
 
-    if (!n || n->magic != KMAGIC || !n->is_free == 0)
+    if (!n || n->magic != KMAGIC || n->is_free)
         panic("kfree: invalid or double free");
 
     n->is_free = 1;
     try_merge(n);
 }
 
-// Statistik (valfritt)
 size_t kmalloc_used_bytes(void) {
     size_t total = 0;
     KmallocNode* n = free_head;
@@ -210,4 +220,3 @@ size_t kmalloc_free_bytes(void) {
     }
     return total;
 }
-
