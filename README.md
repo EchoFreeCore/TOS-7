@@ -17,17 +17,15 @@ The system is composed of the following primary components:
     - Device I/O
     - Initialization and Boot Procedure
 
-All components are written in ANSI C and GAS-style assembly.
+TOS-7 is a reaction to complexity.
+It is a statement that clarity still matters.
 
-NOTES:
 - All modules are written in C89-compatible style.
 - Assembly follows GAS syntax, minimal and readable.
 - No dynamic linking. No kernel modules. No config files.
 - If it cannot be explained on a whiteboard, it is not here.
 - POSIX.1-1988 userland
 
-TOS-7 is a reaction to complexity.
-It is a statement that clarity still matters.
 
 --------------------------
 SYSCALL DISPATCH
