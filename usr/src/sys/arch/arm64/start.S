@@ -131,6 +131,13 @@ _startup:
 
     bl      main
 
+.text
+.global this_cpu
+.type this_cpu, %function
+this_cpu:
+    mrs     x0, MPIDR_EL1
+    and     w0, w0, #0b11   // maskera aff0 (bits [1:0])
+    ret
 
     .text
     .global stop
