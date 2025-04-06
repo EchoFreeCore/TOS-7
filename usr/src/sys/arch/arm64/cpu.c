@@ -158,27 +158,6 @@ uint64_t cpu_virtual_timer(void) {
 
 
 // =========================
-// Trap & Context
-// =========================
-
-int context_save(uintptr_t *label) {
-    return setlabel(label);
-}
-
-int context_restore(uintptr_t *label) {
-    return gotolabel(label);
-}
-
-void context_return(uintptr_t addr) {
-    returnto(addr);
-}
-
-uint64_t fault_address(void) {
-    return getfar();
-}
-
-
-// =========================
 // Event primitives
 // =========================
 
