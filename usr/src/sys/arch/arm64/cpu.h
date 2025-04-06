@@ -67,14 +67,6 @@ uint64_t cpu_cycle_counter(void);       // physical/core cycles
 uint64_t cpu_virtual_timer(void);       // monotonic virtual timer
 
 // ====================================
-// Trap / Context / Fault Handling
-// ====================================
-int      context_save(uintptr_t *label);
-int      context_restore(uintptr_t *label);
-void     context_return(uintptr_t addr);
-uint64_t fault_address(void);
-
-// ====================================
 // Event primitives
 // ====================================
 void cpu_event_signal(void);    // SEV
