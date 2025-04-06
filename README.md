@@ -16,8 +16,6 @@ The system is composed of the following primary components:
     - File System Interface (VFS)
     - Device I/O
     - Initialization and Boot Procedure
-    - POSIX.1-1988 userland
-    - ANSI C89 Libray
 
 All components are written in ANSI C and GAS-style assembly.
 
@@ -26,6 +24,7 @@ NOTES:
 - Assembly follows GAS syntax, minimal and readable.
 - No dynamic linking. No kernel modules. No config files.
 - If it cannot be explained on a whiteboard, it is not here.
+- POSIX.1-1988 userland
 
 TOS-7 is a reaction to complexity.
 It is a statement that clarity still matters.
@@ -63,7 +62,7 @@ MEMORY MANAGEMENT
 TOS-7 uses a page-table based MMU design.
 
     - Kernel heap is allocated via `kmalloc.c`
-    - User space memory via `brk()` and `mmap()`
+    - User space memory via `mmap()`
     - Physical frames and mappings in `paging.c`
 
 --------------------------
@@ -199,7 +198,7 @@ Additions:
   • Kernel memory zones, kmalloc
   • Directory operations, rename, mkdir, unlink
   • Improved stat(), time, sleep()
-  • Sh, cp, mv, rm, ps, kill, mount
+  • sh, cp, mv, rm, ps, kill, mount
   • libc v1 and stdio core support
   • Manpages, cron, and /etc structure
 
