@@ -3,43 +3,42 @@
 #include "process.h"
 #include <errno.h>
 #include <stddef.h>
+#include <stdint.h>
 
 void* sys_mmap(void* addr, size_t length, int prot, int flags, int fd, off_t offset) {
-    (void)fd; (void)offset; // Ignoreras i denna version
+    (void)fd; (void)offset; // MAP_ANON only
+
     if (length == 0 || length > 0x10000000)
         return (void*)-EINVAL;
 
+    // Justera till pagesize
+    size_t size = PAGE_ALIGN(length);
+
+    // Allokera fysisk region (för enkelhet: en contiguous area)
+    uintptr_t phys_base = pmm_alloc_pages(size / PAGE_SIZE);
+    if (!phys_base)
+        return (void*)-ENOMEM;
+
+    // Översätt prot till MMU-flaggor
+    uint64_t mmu_flags = PTE_VALID | PTE_USER;
+    if (prot & PROT_WRITE) mmu_flags |= PTE_WRITE;
+
+    // Välj virtuell adress i mmap-regionen
     uintptr_t va = current_proc->mmap_brk;
-    uintptr_t end = (va + length + PAGE_SIZE - 1) & PAGE_MASK;
+    void* virt = mmu_map_region(phys_base, size, mmu_flags);
+    if (!virt)
+        return (void*)-ENOMEM;
 
-    for (uintptr_t ptr = va; ptr < end; ptr += PAGE_SIZE) {
-        uintptr_t phys = pmm_alloc_page();
-        if (!phys)
-            return (void*)-ENOMEM;
+    // Uppdatera brk för framtida anrop
+    current_proc->mmap_brk = (uintptr_t)virt + size;
 
-        uint32_t flags = PAGE_PRESENT | PAGE_USER;
-        if (prot & PROT_WRITE) flags |= PAGE_RW;
-        vmm_map_user(current_proc->page_table, ptr, phys, flags);
-    }
-
-    current_proc->mmap_brk = end;
-    return (void*)va;
+    return virt;
 }
 
 int sys_munmap(void* addr, size_t length) {
     if (!addr || length == 0)
         return -EINVAL;
 
-    uintptr_t va = (uintptr_t)addr;
-    uintptr_t end = (va + length + PAGE_SIZE - 1) & PAGE_MASK;
-
-    for (uintptr_t ptr = va; ptr < end; ptr += PAGE_SIZE) {
-        uintptr_t phys = vmm_resolve(current_proc->page_table, ptr);
-        if (phys) {
-            vmm_unmap(current_proc->page_table, ptr);
-            pmm_free_page(phys);
-        }
-    }
-
+    mmu_unmap_region(addr, PAGE_ALIGN(length));
     return 0;
 }
