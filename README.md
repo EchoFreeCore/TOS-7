@@ -1,15 +1,7 @@
-# TOS/7 
- 
-TOS/7 Embedded System
-POSIX.1-1988
+#TOS-7
 
-Userland in TOS/7 is not an ecosystem.
-It is a toolkit.
-
-A set of static tools — understandable, maintainable, rebuildable.
-
+TOS-7 is not an ecosystem
 It is UNIX as it was meant to be:
-
 A small number of well-crafted programs that work together,
 speak via file descriptors, and don’t overstep.
 
@@ -17,11 +9,11 @@ speak via file descriptors, and don’t overstep.
 OVERVIEW
 --------------------------
 
-This document outlines the staged release progression of TOS/7, a minimal
+This document outlines the staged release progression of TOS-7, a minimal
 UNIX-inspired operating system with a focus on clarity, static linkage, 
 manual simplicity, and research-grade transparency.
 
-TOS/7 is not a clone, nor a reimplementation — it is a new UNIX-like 
+TOS-7 is not a clone, nor a reimplementation — it is a new UNIX-like 
 kernel and userland created in the spirit of V6, V7, and Research V10, 
 reborn with modern toolchains and retro engineering intent.
 
@@ -34,6 +26,8 @@ The system is composed of the following primary components:
     - File System Interface (VFS)
     - Device I/O
     - Initialization and Boot Procedure
+    - POSIX.1-1988 userland
+    - ANSI C89 Libray
 
 All components are written in ANSI C and GAS-style assembly.
 
@@ -43,7 +37,7 @@ NOTES:
 - No dynamic linking. No kernel modules. No config files.
 - If it cannot be explained on a whiteboard, it is not here.
 
-TOS/7 is a reaction to complexity.
+TOS-7 is a reaction to complexity.
 It is a statement that clarity still matters.
 
 --------------------------
@@ -57,7 +51,7 @@ Each syscall is implemented in a dedicated subsystem module (e.g. `vfs.c`,
 `scheduler.c`, `mmu.c`).
 
 The syscall ABI is modeled after FreeBSD for libc compatibility, but only
-a minimal subset is implemented for early bootstrapping.
+a minimal subset is implemented..
 
 --------------------------
 TRAP AND INTERRUPTS
@@ -76,7 +70,7 @@ system timer (scheduler tick).
 MEMORY MANAGEMENT
 --------------------------
 
-TOS/7 uses a page-table based MMU design.
+TOS-7 uses a page-table based MMU design.
 
     - Kernel heap is allocated via `kmalloc.c`
     - User space memory via `brk()` and `mmap()`
@@ -111,7 +105,7 @@ The ELF loader (`exec.c`) maps a user binary and sets up its initial stack.
 DEVICE I/O
 --------------------------
 
-Device drivers are minimal, character-based, and statically registered.
+Device drivers are default minimal, character-based, and statically registered.
 
 The system supports:
 
@@ -126,7 +120,7 @@ All device I/O is synchronous and buffered within the kernel
 SCHEDULER
 --------------------------
 
-TOS/7 supports preemptive multithreading, using a fixed-priority, multi-class
+TOS-7 supports preemptive multithreading, using a fixed-priority, multi-class
 scheduler.
 
 There are three classes:
@@ -174,7 +168,7 @@ FUTURE WORK
     - Add `/proc`, `/sys`, and virtual filesystems
     - Support pthread-style threading
     - Implement signal delivery and timers
-    - Write a full libc to match kernel ABI
+    - Write a full clean POSIX libc to match kernel ABI
 
 --------------------------
 RELEASE STAGES
@@ -186,7 +180,7 @@ preferred over abstraction.
 
 ---
 
-VERSION: TOS/7
+VERSION: TOS-7
 Status:   Active Development (Pre-release)
 Goal:     Static UNIX Kernel with POSIX Core
 
@@ -201,11 +195,11 @@ Features:
   • Manual memory allocation (brk/sbrk)
 
 Marker:
-  /etc/tos-release → "TOS/7 (2025) — Static Core"
+  /etc/tos-release → "TOS-7 (2025) — Static Core"
 
 ---
 
-VERSION: TOS/7
+VERSION: TOS-7
 Status:   Stable Core (Future milestone)
 Goal:     POSIX Kernel Subset with Userland
 
@@ -221,7 +215,7 @@ Additions:
 
 ---
 
-VERSION: TOS/8
+VERSION: TOS-8
 Status:   Next Generation System (Optional)
 Goal:     Dynamic Linking, Signals, and Paging
 
@@ -237,7 +231,7 @@ Additions:
 
 VERSION: TOS-9
 Status:   Visionary Milestone
-Goal:     SMP, networking, packages
+Goal:     SMP networking, packages
 
 Additions:
   • SMP scheduler with ASID and TLB isolation
@@ -245,15 +239,14 @@ Additions:
   • Package manager (pkg(8)-like)
   • Dynamic framebuffer/VGA
   • useradd, login, tty, init multi-user mode
-  • Build system redesign (optional make replacement)
 
 --------------------------
 VERSIONING POLICY
 --------------------------
 
-• TOS/7: development and research track  
-• TOS/8: stable ABI release for userland compatibility  
-• TOS/9 and beyond: maintain minimalism, introduce capability incrementally  
+• TOS-7: development and research track  
+• TOS-8: stable ABI release for userland compatibility  
+• TOS-9 and beyond: maintain minimalism, introduce capability incrementally  
 • Syscall table is append-only, compatible with FreeBSD ABI numbers
 
 --------------------------
@@ -275,11 +268,9 @@ END OF RELEASE_PLAN.txt
 
 
 
-TOS/7 KERNEL — TODO LIST
+TOS-7 KERNEL — TODO LIST
 -------------------------
-Appendix G: "Future Work"
-Document version: April 1983 (or so we pretend)
-System: TOS/7 0.1-ALPHA
+System: TOS-7 0.1-ALPHA
 Philosophy: Simplicity is the ultimate sophistication.
 
 -------------------------
@@ -298,8 +289,8 @@ Philosophy: Simplicity is the ultimate sophistication.
 2. MEMORY MANAGEMENT
 -------------------------
 
-- [ ] Write complete `mmu.c` with full page table abstraction
-- [ ] Support demand-paging and COW for `fork()`
+- [X] Write complete `mmu.c` with full page table abstraction
+- [X] Support demand-paging and COW for `fork()`
 - [ ] Add simple `vma.c` (Virtual Memory Area tracking)
 - [ ] Support `mmap()` for file-backed mappings
 - [ ] Write minimal page frame allocator (buddy or bitmap)
@@ -366,29 +357,6 @@ Philosophy: Simplicity is the ultimate sophistication.
 - [ ] Audit memory allocation for leaks
 - [ ] Make all trap handlers reentrant
 - [ ] Use consistent naming (`sys_`, `vfs_`, `proc_`)
-
--------------------------
-9. IDEAS UNDER CONSIDERATION
--------------------------
-
-- [ ] Add support for user-level threading (libuthread)
-- [ ] Remote TTY over serial (like early Unix terminals)
-- [ ] `ptrace()`-like minimal debugger interface
-- [ ] Time-traveling debugger like rr (just dreaming...)
-- [ ] Rebuild UNIX v7 userland on top of TOS/7 (for science)
-
--------------------------
-FINAL NOTE
--------------------------
-
-TOS/7 is not a clone of UNIX.
-It is UNIX in spirit — minimal, clean, readable, and buildable
-by one person with a text editor and a dream.
-
-We do not add features.
-We remove everything that is not essential to control.
-
--- End of TODO.txt --
 
 
 /
