@@ -3,10 +3,6 @@
 
 /* POSIX.1-1988 data types with 32/64-bit awareness */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /* --- Maskinberoende typer --- */
 #if defined(__x86_64__) || defined(__aarch64__) || defined(__LP64__) || defined(_M_X64)
     typedef unsigned long   size_t;
@@ -33,10 +29,6 @@ typedef unsigned int    gid_t;
 typedef unsigned short  mode_t;
 typedef unsigned short  nlink_t;
 typedef long            clock_t;
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* _SYS_TYPES_H */
 
