@@ -1,130 +1,224 @@
+/* stdio.c - Minimal stdio implementation for TOS-7 (UNIX-style, circa 1992)
+ * POSIX.1-1988 / ANSI C89 compatible
+ * With setvbuf, setbuf, ungetc, fputs, fgets, fprintf support
+ */
+
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <string.h>
 #include <stdarg.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include "syscall.h"
-#include "syscall-nr.h"
-#include "stdio.h"
+#include <stdio.h>
 
-// Minimal FILE-struktur
-typedef struct _FILE {
-    int fd;
-} FILE;
+#define MAX_FILES 16
 
-// Statiska standardströmmar
-FILE _stdin  = { .fd = 0 };
-FILE _stdout = { .fd = 1 };
-FILE _stderr = { .fd = 2 };
+static FILE file_table[MAX_FILES];
 
-FILE *stdin  = &_stdin;
-FILE *stdout = &_stdout;
-FILE *stderr = &_stderr;
+FILE* stdin  = &file_table[0];
+FILE* stdout = &file_table[1];
+FILE* stderr = &file_table[2];
 
-// Intern skrivare
-static void fd_putc(char c, void *userdata) {
-    int fd = *(int*)userdata;
-    syscall(SYS_write, fd, (uintptr_t)&c, 1, 0, 0, 0);
-}
-
-// fprintf och printf via samma backend
-int vfprintf(FILE *stream, const char *format, va_list ap) {
-    int fd = stream->fd;
-    int count = 0;
-
-    // intern putc-funktion
-    void local_putc(char c, void *ud) {
-        syscall(SYS_write, fd, (uintptr_t)&c, 1, 0, 0, 0);
-        count++;
-    }
-
-    // kör formatmotorn
-    extern int vsnprintf_core(char *str, size_t size, const char *fmt, va_list ap);
-    // workaround: vi skriver direkt till fd, inte via buffert
-    // så vi måste duplicera parsern om vi vill ha 100% kontroll
-    // detta duger initialt
-
-    // Workaround för printf utan duplicering:
-    char tmp[512];
-    int len = vsnprintf_core(tmp, sizeof(tmp), format, ap);
-    if (len > 0)
-        syscall(SYS_write, fd, (uintptr_t)tmp, len, 0, 0, 0);
-
-    return len;
-}
-
-int fprintf(FILE *stream, const char *format, ...) {
-    va_list ap;
-    va_start(ap, format);
-    int ret = vfprintf(stream, format, ap);
-    va_end(ap);
-    return ret;
-}
-
-int printf(const char *format, ...) {
-    va_list ap;
-    va_start(ap, format);
-    int ret = vfprintf(stdout, format, ap);
-    va_end(ap);
-    return ret;
-}
-
-int snprintf(char *str, size_t size, const char *format, ...) {
-    va_list ap;
-    va_start(ap, format);
-    extern int vsnprintf_core(char *str, size_t size, const char *fmt, va_list ap);
-    int ret = vsnprintf_core(str, size, format, ap);
-    va_end(ap);
-    return ret;
-}
-
-int sprintf(char *str, const char *format, ...) {
-    va_list ap;
-    va_start(ap, format);
-    extern int vsnprintf_core(char *str, size_t size, const char *fmt, va_list ap);
-    int ret = vsnprintf_core(str, (size_t)-1, format, ap);
-    va_end(ap);
-    return ret;
-}
-
-int putchar(int c) {
-    char ch = (char)c;
-    syscall(SYS_write, 1, (uintptr_t)&ch, 1, 0, 0, 0);
-    return c;
-}
-
-int puts(const char *s) {
-    size_t len = 0;
-    while (s[len]) len++;
-    syscall(SYS_write, 1, (uintptr_t)s, len, 0, 0, 0);
-    syscall(SYS_write, 1, (uintptr_t)"\n", 1, 0, 0, 0);
-    return (int)(len + 1);
-}
-
-int getchar(void) {
-    char c;
-    if (syscall(SYS_read, 0, (uintptr_t)&c, 1, 0, 0, 0) == 1)
-        return (int)c;
+static int mode_to_flags(const char* mode) {
+    if (strcmp(mode, "r") == 0) return O_RDONLY;
+    if (strcmp(mode, "w") == 0) return O_WRONLY | O_CREAT | O_TRUNC;
+    if (strcmp(mode, "a") == 0) return O_WRONLY | O_CREAT | O_APPEND;
     return -1;
 }
 
-char *gets(char *s) {
-    int i = 0;
-    char c;
-    while (syscall(SYS_read, 0, (uintptr_t)&c, 1, 0, 0, 0) == 1) {
-        if (c == '\n' || c == '\r') {
-            s[i] = '\0';
-            return s;
+FILE* fopen(const char* path, const char* mode) {
+    int flags = mode_to_flags(mode);
+    if (flags < 0) return NULL;
+
+    int fd = open(path, flags, 0666);
+    if (fd < 0) return NULL;
+
+    for (int i = 3; i < MAX_FILES; ++i) {
+        if (file_table[i].fd == 0) {
+            FILE* f = &file_table[i];
+            f->fd = fd;
+            f->flags = (flags == O_RDONLY) ? _F_READ : _F_WRITE;
+            f->bufpos = 0;
+            f->buflen = 0;
+            f->last_op = 0;
+            f->error = 0;
+            f->unget = -1;
+            f->bufmode = _IOFBF;
+            f->bufuser = 0;
+            f->bufsize = BUFSIZ;
+            f->buffer = f->internal;
+            return f;
         }
-        s[i++] = c;
     }
+
+    close(fd);
     return NULL;
 }
 
-void perror(const char *s) {
-    if (s && *s) {
-        syscall(SYS_write, 2, (uintptr_t)s, strlen(s), 0, 0, 0);
-        syscall(SYS_write, 2, (uintptr_t)": ", 2, 0, 0, 0);
-    }
-    const char *msg = "error\n"; // du kan förbättra till errno-baserat
-    syscall(SYS_write, 2, (uintptr_t)msg, strlen(msg), 0, 0, 0);
+int fclose(FILE* f) {
+    if (!f || f->fd <= 0) return EOF;
+    fflush(f);
+    int res = close(f->fd);
+    f->fd = 0;
+    if (f->bufuser && f->buffer) f->buffer = NULL;
+    return res;
 }
+
+int fflush(FILE* f) {
+    if (!f) return EOF;
+    if (f->last_op == 2 && f->bufpos > 0) {
+        ssize_t res = write(f->fd, f->buffer, f->bufpos);
+        if (res < 0) {
+            f->error = 1;
+            return EOF;
+        }
+        f->bufpos = 0;
+    }
+    return 0;
+}
+
+int fputc(int c, FILE* f) {
+    if (!f || !(f->flags & _F_WRITE)) return EOF;
+    if (f->last_op == 1) {
+        f->bufpos = 0;
+        f->buflen = 0;
+    }
+    f->last_op = 2;
+    f->buffer[f->bufpos++] = (char)c;
+    if (f->bufpos >= f->bufsize || c == '\n') return fflush(f);
+    return (unsigned char)c;
+}
+
+int fgetc(FILE* f) {
+    if (!f || !(f->flags & _F_READ)) return EOF;
+
+    if (f->unget != -1) {
+        int c = f->unget;
+        f->unget = -1;
+        return c;
+    }
+
+    if (f->last_op == 2) {
+        fflush(f);
+        f->bufpos = 0;
+        f->buflen = 0;
+    }
+    f->last_op = 1;
+
+    if (f->bufpos >= f->buflen) {
+        ssize_t res = read(f->fd, f->buffer, f->bufsize);
+        if (res <= 0) return EOF;
+        f->bufpos = 0;
+        f->buflen = (size_t)res;
+    }
+    return (unsigned char)f->buffer[f->bufpos++];
+}
+
+int fwrite(const void* ptr, size_t size, size_t nmemb, FILE* f) {
+    const char* p = (const char*)ptr;
+    size_t total = size * nmemb;
+    size_t written = 0;
+
+    for (size_t i = 0; i < total; ++i) {
+        if (fputc(p[i], f) == EOF) break;
+        ++written;
+    }
+
+    return written / size;
+}
+
+int fread(void* ptr, size_t size, size_t nmemb, FILE* f) {
+    char* p = (char*)ptr;
+    size_t total = size * nmemb;
+    size_t readn = 0;
+
+    for (size_t i = 0; i < total; ++i) {
+        int ch = fgetc(f);
+        if (ch == EOF) break;
+        p[i] = (char)ch;
+        ++readn;
+    }
+
+    return readn / size;
+}
+
+int ungetc(int c, FILE* f) {
+    if (!f || f->unget != -1) return EOF;
+    f->unget = c;
+    return c;
+}
+
+int setvbuf(FILE* f, char* buf, int mode, size_t size) {
+    if (!f || mode < 0 || mode > 2) return -1;
+    fflush(f);
+    f->bufmode = mode;
+    if (buf) {
+        f->buffer = buf;
+        f->bufsize = size;
+        f->bufuser = 1;
+    } else {
+        f->buffer = f->internal;
+        f->bufsize = BUFSIZ;
+        f->bufuser = 0;
+    }
+    return 0;
+}
+
+void setbuf(FILE* f, char* buf) {
+    setvbuf(f, buf, buf ? _IOFBF : _IONBF, BUFSIZ);
+}
+
+int fputs(const char* s, FILE* f) {
+    while (*s) {
+        if (fputc(*s++, f) == EOF) return EOF;
+    }
+    return 0;
+}
+
+char* fgets(char* s, int size, FILE* f) {
+    if (!s || size <= 0) return NULL;
+    char* p = s;
+    for (int i = 0; i < size - 1; ++i) {
+        int ch = fgetc(f);
+        if (ch == EOF) break;
+        *p++ = ch;
+        if (ch == '\n') break;
+    }
+    *p = '\0';
+    return (p == s) ? NULL : s;
+}
+
+int fprintf(FILE* f, const char* fmt, ...) {
+    char tmp[1024];
+    va_list ap;
+    va_start(ap, fmt);
+    int len = vsnprintf_core(tmp, sizeof(tmp), fmt, ap);
+    va_end(ap);
+    return fwrite(tmp, 1, len, f);
+}
+
+int fseek(FILE* f, long offset, int whence) {
+    if (!f) return -1;
+    fflush(f);
+    f->bufpos = 0;
+    f->buflen = 0;
+    f->unget = -1;
+    f->eof = 0;
+    off_t res = lseek(f->fd, offset, whence);
+    return (res == (off_t)-1) ? -1 : 0;
+}
+
+long ftell(FILE* f) {
+    if (!f) return -1;
+    off_t base = lseek(f->fd, 0, SEEK_CUR);
+    if (base == (off_t)-1) return -1;
+    return base - (f->buflen - f->bufpos);
+}
+
+int feof(FILE* f) {
+    return f ? f->eof : 0;
+}
+
+int ferror(FILE* f) {
+    return f ? f->error : 0;
+}
+
