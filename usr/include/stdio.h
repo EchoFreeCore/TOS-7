@@ -1,7 +1,20 @@
 #ifndef _STDIO_H
 #define _STDIO_H
 
-/* Minimal FILE and I/O interface */
+typedef struct {
+    int fd;
+    int flags;
+    int bufmode;
+    char* buffer;
+    char internal[BUFSIZ];
+    size_t bufpos, buflen;
+    int last_op;  // 1=read, 2=write
+    int error;
+    int eof;
+    int unget;
+    int bufuser;
+    size_t bufsize;
+} FILE;
 
 typedef struct _FILE FILE;
 extern FILE* stdin;
