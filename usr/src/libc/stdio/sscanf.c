@@ -166,7 +166,7 @@ static int parse_format_spec(const char** fmt, format_spec_t* spec) {
 }
 
 
-int sscanf(const char* input, const char* fmt, ...) {
+int vsscanf(const char* input, const char* fmt, ...) {
     va_list args;
     int matches = 0;
     const char* start = input;
