@@ -5,10 +5,6 @@
 #include <stddef.h>   // för size_t, NULL
 #include <stdint.h>   // för intptr_t (sbrk)
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /* File descriptors */
 #define STDIN_FILENO   0
 #define STDOUT_FILENO  1
@@ -73,9 +69,5 @@ char   *getenv(const char *name);
 int     putenv(char *string);
 int     setenv(const char *name, const char *value, int overwrite);
 int     unsetenv(const char *name);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* _UNISTD_H */
