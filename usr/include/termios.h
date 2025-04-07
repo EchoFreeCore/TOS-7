@@ -2,20 +2,12 @@
 #define _TERMIOS_H
 
 #include <sys/types.h>
+typedef unsigned char cc_t;
+typedef unsigned int speed_t;
+typedef unsigned int tcflag_t;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-    /* Grundtyper enligt POSIX */
-    typedef unsigned char cc_t;
-    typedef unsigned int speed_t;
-    typedef unsigned int tcflag_t;
-
-    /* Antal kontrolltecken (litet, portabelt) */
 #define NCCS 8
 
-/* Kontrolltecken-index */
 #define VINTR    0  /* Interrupt */
 #define VQUIT    1  /* Quit */
 #define VERASE   2  /* Erase char */
@@ -25,16 +17,15 @@ extern "C" {
 #define VTIME    6  /* Timeout in deciseconds */
 #define VSUSP    7  /* Suspend */
 
-/* Terminalattribut-struktur */
-    struct termios {
-        tcflag_t c_iflag;     /* Input mode flags */
-        tcflag_t c_oflag;     /* Output mode flags */
-        tcflag_t c_cflag;     /* Control mode flags */
-        tcflag_t c_lflag;     /* Local mode flags */
-        cc_t     c_cc[NCCS];  /* Control characters */
-        speed_t  c_ispeed;    /* Input speed */
-        speed_t  c_ospeed;    /* Output speed */
-    };
+struct termios {
+    tcflag_t c_iflag;     /* Input mode flags */
+    tcflag_t c_oflag;     /* Output mode flags */
+    tcflag_t c_cflag;     /* Control mode flags */
+    tcflag_t c_lflag;     /* Local mode flags */
+    cc_t     c_cc[NCCS];  /* Control characters */
+    speed_t  c_ispeed;    /* Input speed */
+    speed_t  c_ospeed;    /* Output speed */
+};
 
     /* Input flags */
 #define BRKINT   0x0001
@@ -103,19 +94,15 @@ extern "C" {
 #define TCION       3
 
 /* POSIX API */
-    int tcgetattr(int fd, struct termios* termios_p);
-    int tcsetattr(int fd, int actions, const struct termios* termios_p);
-    speed_t cfgetispeed(const struct termios* termios_p);
-    speed_t cfgetospeed(const struct termios* termios_p);
-    int cfsetispeed(struct termios* termios_p, speed_t speed);
-    int cfsetospeed(struct termios* termios_p, speed_t speed);
-    int tcflush(int fd, int queue_selector);
-    int tcflow(int fd, int action);
-    int tcdrain(int fd);
-    int tcsendbreak(int fd, int duration);
-
-#ifdef __cplusplus
-}
-#endif
+int tcgetattr(int fd, struct termios* termios_p);
+int tcsetattr(int fd, int actions, const struct termios* termios_p);
+speed_t cfgetispeed(const struct termios* termios_p);
+speed_t cfgetospeed(const struct termios* termios_p);
+int cfsetispeed(struct termios* termios_p, speed_t speed);
+int cfsetospeed(struct termios* termios_p, speed_t speed);
+int tcflush(int fd, int queue_selector);
+int tcflow(int fd, int action);
+int tcdrain(int fd);
+int tcsendbreak(int fd, int duration);
 
 #endif /* _TERMIOS_H */
