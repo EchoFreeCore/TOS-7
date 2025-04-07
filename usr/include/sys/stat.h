@@ -3,10 +3,6 @@
 
 #include <sys/types.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /* --- POSIX struct stat --- */
 struct stat {
     dev_t     st_dev;     /* device ID */
@@ -70,10 +66,6 @@ int lstat(const char *pathname, struct stat *buf); /* optional but common */
 int chmod(const char *path, mode_t mode);
 mode_t umask(mode_t mask);
 int mkdir(const char *pathname, mode_t mode);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* _SYS_STAT_H */
 
