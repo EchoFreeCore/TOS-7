@@ -7,6 +7,7 @@ typedef unsigned int speed_t;
 typedef unsigned int tcflag_t;
 
 #define NCCS 8
+>>>>>>> 5a6fadfc98e4501f1893c2008cc83e3d49ce0125
 
 #define VINTR    0  /* Interrupt */
 #define VQUIT    1  /* Quit */
