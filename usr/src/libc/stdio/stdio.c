@@ -187,6 +187,14 @@ char* fgets(char* s, int size, FILE* f) {
     return (p == s) ? NULL : s;
 }
 
+int printf(const char* fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+    int r = vsnprintf_core(stdout, fmt, ap);
+    va_end(ap);
+    return r;
+}
+
 int fprintf(FILE* f, const char* fmt, ...) {
     char tmp[1024];
     va_list ap;
@@ -214,11 +222,60 @@ long ftell(FILE* f) {
     return base - (f->buflen - f->bufpos);
 }
 
+int sscanf(const char *str, const char *format, ...) {
+    va_list ap;
+    int result;
+    va_start(ap, format);
+    result = vsscanf(str, format, ap);
+    va_end(ap);
+    return result;
+}
+
+int scanf(const char *format, ...) {
+    va_list ap;
+    int result;
+    va_start(ap, format);
+    result = vfscanf(stdin, format, ap);  // kräver vfscanf
+    va_end(ap);
+    return result;
+}
+
 int feof(FILE* f) {
     return f ? f->eof : 0;
 }
 
 int ferror(FILE* f) {
     return f ? f->error : 0;
+}
+
+void clearerr(FILE* f) {
+    f->error = 0;
+    f->eof = 0;
+}
+
+int getc(FILE* f) {
+    return fgetc(f);
+}
+
+int putc(int c, FILE* f) {
+    return fputc(c, f);
+}
+
+int getchar(void) {
+    return getc(stdin);
+}
+
+int putchar(int c) {
+    return putc(c, stdout);
+}
+
+void rewind(FILE* f) {
+    fseek(f, 0L, SEEK_SET);
+    clearerr(f);
+}
+
+if (res == 0) {
+    f->eof = 1;
+    return EOF;
 }
 
