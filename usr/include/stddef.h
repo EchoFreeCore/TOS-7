@@ -1,10 +1,6 @@
 #ifndef _STDDEF_H
 #define _STDDEF_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /* --- NULL --- */
 #ifndef NULL
 #define NULL ((void *)0)
@@ -24,9 +20,5 @@ extern "C" {
 
 /* --- offsetof --- */
 #define offsetof(type, member) ((size_t)&(((type *)0)->member))
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* _STDDEF_H */
