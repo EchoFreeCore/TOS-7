@@ -1,10 +1,6 @@
 #ifndef _TIME_H
 #define _TIME_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef long time_t;
 
 /* Broken-down time structure */
@@ -28,9 +24,5 @@ struct tm *gmtime(const time_t *timep);
 struct tm *localtime(const time_t *timep);
 unsigned int sleep(unsigned int seconds);
 unsigned int alarm(unsigned int seconds);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* _TIME_H */
