@@ -4,6 +4,10 @@
 #include <stddef.h>  // för size_t
 #include <stdarg.h>  // för va_list
 
+#ifndef NULL
+#define NULL ((void*)0)
+#endif
+
 /* Symboler */
 #define BUFSIZ 1024
 #define EOF (-1)
