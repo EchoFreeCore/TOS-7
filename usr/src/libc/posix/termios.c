@@ -5,22 +5,34 @@
 
 /* POSIX ioctl request codes (du definierar dessa i din kernel ABI) */
 #ifndef TIOCGETA
-#define TIOCGETA   0x5401
-#define TIOCSETA   0x5402
-#define TIOCSETAW  0x5403
-#define TIOCSETAF  0x5404
-#define TCFLSH     0x5405
-#define TCXONC     0x5406
-#define TCSBRK     0x5407
+#include <sys/ioccom.h>  // Du måste ha detta för _IO* macros
+
+#define TIOCGETA    _IOR('t', 19, struct termios)
+#define TIOCSETA    _IOW('t', 20, struct termios)
+#define TIOCSETAW   _IOW('t', 21, struct termios)
+#define TIOCSETAF   _IOW('t', 22, struct termios)
+
+#define TCSBRK      _IO('t', 123)
+#define TCFLSH      _IO('t', 124)
+#define TCXONC      _IO('t', 125)
 #endif
 
-int tcgetattr(int fd, struct termios* termios_p) {
-    if (!termios_p) {
+int tcgetattr(int fd, struct termios *termios_p) {
+    if (termios_p == NULL) {
         errno = EINVAL;
         return -1;
     }
-    return ioctl(fd, TIOCGETA, termios_p);
+
+    int ret = ioctl(fd, TIOCGETA, termios_p);
+    if (ret < 0) {
+        if (errno == 0)
+            errno = ENOTTY;
+        return -1;
+    }
+
+    return 0;
 }
+
 
 int tcsetattr(int fd, int actions, const struct termios* termios_p) {
     int request;
@@ -82,4 +94,13 @@ int tcdrain(int fd) {
 
 int tcsendbreak(int fd, int duration) {
     return ioctl(fd, TCSBRK, (void*)(long)(duration == 0 ? 0 : duration));
+}
+
+void cfmakeraw(struct termios *t) {
+    t->c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+    t->c_oflag &= ~(OPOST);
+    t->c_cflag |= (CS8);
+    t->c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+    t->c_cc[VMIN] = 1;
+    t->c_cc[VTIME] = 0;
 }
