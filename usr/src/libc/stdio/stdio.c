@@ -9,11 +9,7 @@
  #include <stdarg.h>
  #include <stdio.h>
  
- #define MAX_FILES 16
- 
- /* Forward declarations (du har dessa definierade någonstans) */
- int vsnprintf_core(char* buf, size_t size, const char* fmt, va_list ap);
- int vfscanf(FILE* stream, const char* format, va_list ap);
+ #define MAX_FILES 256
  
  /* File table and standard streams */
  static FILE file_table[MAX_FILES];
@@ -27,7 +23,7 @@
      for (int i = 0; i < MAX_FILES; ++i)
          file_table[i].fd = -1;
  }
- 
+
  /* Open mode mapping */
  static int mode_to_flags(const char* mode) {
      if (strcmp(mode, "r") == 0) return O_RDONLY;
@@ -210,7 +206,7 @@
      char tmp[1024];
      va_list ap;
      va_start(ap, fmt);
-     int len = vsnprintf_core(tmp, sizeof(tmp), fmt, ap);
+     int len = vsnprintf(tmp, sizeof(tmp), fmt, ap);
      va_end(ap);
      fwrite(tmp, 1, len, stdout);
      return len;
@@ -220,7 +216,7 @@
      char tmp[1024];
      va_list ap;
      va_start(ap, fmt);
-     int len = vsnprintf_core(tmp, sizeof(tmp), fmt, ap);
+     int len = vsnprintf(tmp, sizeof(tmp), fmt, ap);
      va_end(ap);
      fwrite(tmp, 1, len, f);
      return len;
@@ -297,4 +293,6 @@
      va_end(ap);
      return result;
  }
+
+ 
  

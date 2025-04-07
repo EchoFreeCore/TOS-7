@@ -212,7 +212,7 @@ static void write_with_padding(void (*putc)(char, void *), void *userdata,
     }
 }
 
-int vsnprintf_core(char *str, size_t size, const char *fmt, va_list ap) {
+int vsnprintf(char *str, size_t size, const char *fmt, va_list ap) {
     typedef struct {
         char *buf;
         size_t max;
