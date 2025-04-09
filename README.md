@@ -26,7 +26,6 @@ It is a statement that clarity still matters.
 - Assembly follows GAS syntax, minimal and readable.
 - No dynamic linking. No kernel modules. No config files.
 - If it cannot be explained on a whiteboard, it is not here.
-- POSIX.1-1988 userland
 
 
 --------------------------
