@@ -358,135 +358,43 @@ Philosophy: Simplicity is the ultimate sophistication.
 - [ ] Make all trap handlers reentrant
 - [ ] Use consistent naming (`sys_`, `vfs_`, `proc_`)
 
-
-/
-├── boot/
-│   ├── kernel.img
-│   └── start.elf
-├── dev/
-│   └── null.c
-├── etc/
-│   ├── passwd
-│   ├── ttytab
-│   └── rc
-├── lib/
-│   └── libc.a
-├── proc/
-├── sbin/
-│   ├── fsck
-│   └── mount
-├── tmp/
-├── usr/
-│   ├── bin/
-│   │   ├── make
-│   │   └── cc
-│   ├── include/
-│   │   ├── assert.h
-│   │   ├── ctype.h
-│   │   ├── errno.h
-│   │   ├── fcntl.h
-│   │   ├── limits.h
-│   │   ├── setjmp.h
-│   │   ├── signal.h
-│   │   ├── stdarg.h
-│   │   ├── stddef.h
-│   │   ├── stdio.h
-│   │   ├── stdlib.h
-│   │   ├── string.h
-│   │   ├── syscall.h
-│   │   ├── syscalls.tbl
-│   │   ├── sys/
-│   │   │   ├── mman.h
-│   │   │   ├── syscall.h
-│   │   │   └── types.h
-│   │   ├── time.h
-│   │   └── unistd.h
-│   ├── lib/
-│   │   ├── libm.a
-│   │   ├── libc.a
-│   │   └── libc/
-│   │       ├── assert/assert.c
-│   │       ├── ctype/ctype.c
-│   │       ├── errno/errno.c
-│   │       ├── fcntl/fcntl.c
-│   │       ├── limits/limits.c
-│   │       ├── setjmp/setjmp.c
-│   │       ├── signal/signal.c
-│   │       ├── stdarg/stdarg.c
-│   │       ├── stddef/offsetof.c
-│   │       ├── stdio/
-│   │       │   ├── printf.c
-│   │       │   ├── puts.c
-│   │       │   └── getchar.c
-│   │       ├── stdlib/
-│   │       │   ├── atoi.c
-│   │       │   ├── exit.c
-│   │       │   └── malloc.c
-│   │       ├── string/
-│   │       │   ├── memcpy.c
-│   │       │   ├── strlen.c
-│   │       │   └── strcmp.c
-│   │       ├── syscall/syscall.c
-│   │       ├── time/time.c
-│   │       └── unistd/
-│   │           ├── read.c
-│   │           ├── write.c
-│   │           └── execve.c
-│   └── src/
-│       └── sys/
-│           ├── arch/
-│           │   └── arm64/
-│           │       ├── context.S
-│           │       ├── mmu.S
-│           │       ├── mmu.c
-│           │       ├── mmu.h
-│           │       ├── ptdefs.h
-│           │       └── cpu.h
-│           ├── dev/
-│           │   └── uart.c
-│           ├── fs/
-│           │   ├── devfs.c
-│           │   ├── devfs.h
-│           │   ├── ext2/
-│           │   ├── vfs.c
-│           │   └── vfs.h
-│           ├── include/
-│           │   └── trap_frame.h
-│           ├── init/
-│           │   └── kernel_init.c
-│           ├── kern/
-│           │   ├── syscall.c
-│           │   ├── trap.c
-│           │   ├── exec_loader.c
-│           │   └── panic.c
-│           ├── mm/
-│           │   ├── mmu.c
-│           │   ├── kmalloc.c
-│           │   └── vmm.c
-│           ├── process/
-│           │   ├── process.c
-│           │   ├── process.h
-│           │   └── process_image.h
-│           ├── scheduler/
-│           │   ├── scheduler.c
-│           │   ├── scheduler.h
-│           │   └── queue.c
-│           ├── syscalls/
-│           │   ├── syscall.h
-│           │   └── syscall_wrapper.h
-│           └── thread/
-│               ├── thread.c
-│               └── thread.h
-├── var/
-│   └── log/
-├── toolchain/
-│   ├── Makefile
-│   ├── crt0.S
-│   └── build.sh
-├── build/
-│   ├── kernel.elf
-│   ├── kernel.img
-│   ├── map.txt
-│   └── *.o
-├── Makefile
-└── README.md
+TOS-7/
+└── usr/
+    └── src/
+        └── sys/
+            ├── arch/
+            │   ├── arm64/
+            │   └── board/
+            │       └── rpi4/
+            ├── dev/
+            ├── fs/
+            ├── include/
+            ├── kernel/
+            │   ├── init.c
+            │   ├── panic.c
+            │   └── start.c
+            ├── libk/
+            ├── process/
+            │   ├── context.c
+            │   ├── exec.c
+            │   ├── pid.c
+            │   ├── process.c
+            │   └── signal.c
+            ├── scheduler/
+            │   ├── README.md
+            │   ├── control.c
+            │   ├── lock.c
+            │   ├── queue.c
+            │   ├── rt.c
+            │   ├── sched_class.h
+            │   ├── scheduler.c
+            │   ├── scheduler.h
+            │   ├── sleep.c
+            │   ├── thread.c
+            │   └── tickless.c
+            ├── syscall/
+            ├── vm/
+            │   ├── kmalloc.c
+            │   ├── pmm.c
+            │   └── vmm.c
+            └── trap_handle.c
