@@ -17,6 +17,7 @@ The system is composed of the following primary components:
     - File System Interface (VFS)
     - Device I/O
     - Initialization and Boot Procedure
+    - POSIX.1-1988 Userland
 
 TOS is a reaction to complexity.
 It is a statement that clarity still matters.
