@@ -363,44 +363,44 @@ TOS-7/
 └── usr/
     └── src/
         └── sys/
-            ├── arch/
-            │   ├── arm64/                     # Architecture-specific code for ARM64 CPUs
+            ├── arch/                # Architecture-specific code
+            │   ├── arm64/           # For ARM64 CPUs
             │   └── board/
-            │       └── rpi4/                  # Hardware support for Raspberry Pi 4
-            ├── dev/                           # Device drivers (empty or placeholder)
-            ├── fs/
-            │   ├── ext2/                      # EXT2 filesystem implementation
-            │   ├── devfs.h                    # Device filesystem header
-            │   ├── vfs.c                      # Virtual filesystem layer implementation
-            │   └── vfs.h                      # Header for the VFS interface
-            ├── include/                       # Shared header files
-            ├── kernel/
-            │   ├── init.c                     # Kernel initialization during boot
-            │   ├── panic.c                    # Kernel panic and fatal error handling
-            │   └── start.c                    # Kernel entry point and low-level setup
-            ├── libk/                          # Kernel utility library (empty or placeholder)
-            ├── process/
-            │   ├── context.c                  # Context switching logic for tasks
-            │   ├── exec.c                     # Executing binaries (process launch)
-            │   ├── pid.c                      # PID allocation and management
-            │   ├── process.c                  # Core process creation and control
-            │   └── signal.c                   # Signal handling, likely POSIX-like
-            ├── scheduler/
-            │   ├── README.md                  # Documentation for the scheduler
-            │   ├── control.c                  # Control interface and context switching
-            │   ├── lock.c                     # Locking and synchronization primitives
-            │   ├── queue.c                    # Run queue and scheduling queue logic
-            │   ├── rt.c                       # Real-time scheduling class implementation
-            │   ├── sched_class.h              # Header defining scheduling class interfaces
-            │   ├── scheduler.c                # Core logic for thread scheduling
-            │   ├── scheduler.h                # Scheduler interface and configuration
-            │   ├── sleep.c                    # Sleep/wait management for threads
-            │   ├── thread.c                   # Thread lifecycle and management
-            │   └── tickless.c                 # Tickless scheduling for low-power idle
-            ├── syscall/                       # System call handling (empty or placeholder)
-            ├── vm/
-            │   ├── kmalloc.c                  # Basic heap-based dynamic memory allocator
-            │   ├── pmm.c                      # Physical Memory Manager
-            │   └── vmm.c                      # Virtual Memory Manager
-            └── trap_handle.c                  # Interrupt and exception handling logic
+            │       └── rpi4/        # Raspberry Pi 4 hardware support
+            ├── dev/                 # Device drivers (empty or placeholder)
+            ├── fs/                  # Filesystem code
+            │   ├── ext2/            # EXT2 filesystem implementation
+            │   ├── devfs.h          # Device filesystem interface
+            │   ├── vfs.c            # Virtual filesystem implementation
+            │   └── vfs.h            # VFS interface definitions
+            ├── include/             # Shared kernel headers
+            ├── kernel/              # Core kernel setup and error handling
+            │   ├── init.c           # Kernel initialization logic
+            │   ├── panic.c          # Kernel panic/error output
+            │   └── start.c          # Kernel entry point on boot
+            ├── libk/                # Kernel utility libraries (empty/placeholder)
+            ├── process/             # Process and task management
+            │   ├── context.c        # Context switching
+            │   ├── exec.c           # Executable loading
+            │   ├── pid.c            # PID management
+            │   ├── process.c        # Process lifecycle
+            │   └── signal.c         # POSIX-style signal handling
+            ├── scheduler/           # Thread and process scheduling
+            │   ├── README.md        # Scheduler documentation
+            │   ├── control.c        # Scheduler control logic
+            │   ├── lock.c           # Synchronization primitives
+            │   ├── queue.c          # Run queue management
+            │   ├── rt.c             # Real-time scheduling logic
+            │   ├── sched_class.h    # Scheduling class interfaces
+            │   ├── scheduler.c      # Main scheduler implementation
+            │   ├── scheduler.h      # Scheduler declarations
+            │   ├── sleep.c          # Thread sleeping/waiting
+            │   ├── thread.c         # Thread creation and control
+            │   └── tickless.c       # Tickless idle management
+            ├── syscall/             # System call interface (empty or placeholder)
+            ├── vm/                  # Virtual and physical memory management
+            │   ├── kmalloc.c        # Kernel memory allocator
+            │   ├── pmm.c            # Physical memory manager
+            │   └── vmm.c            # Virtual memory manager
+            └── trap_handle.c        # Interrupt/exception handling
 ```
