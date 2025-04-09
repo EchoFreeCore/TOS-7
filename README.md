@@ -1,4 +1,5 @@
 # TOS
+# Thompson OS
 
 UNIX-inspired operating system with a focus on clarity, static linkage, 
 manual simplicity, and research-grade transparency.
@@ -167,7 +168,7 @@ preferred over abstraction.
 
 ---
 
-VERSION: TOS-7
+VERSION: TOS 1.0
 Status:   Active Development (Pre-release)
 Goal:     Static UNIX Kernel with POSIX Core
 
@@ -182,11 +183,11 @@ Features:
   • Manual memory allocation (brk/sbrk)
 
 Marker:
-  /etc/tos-release → "TOS-7 (2025) — Static Core"
+  /etc/tos-release → "TOS 1.0 (2025) — Static Core"
 
 ---
 
-VERSION: TOS-7
+VERSION: TOS 1.2
 Status:   Stable Core (Future milestone)
 Goal:     POSIX Kernel Subset with Userland
 
@@ -202,7 +203,7 @@ Additions:
 
 ---
 
-VERSION: TOS-8
+VERSION: TOS 2.0
 Status:   Next Generation System (Optional)
 Goal:     Dynamic Linking, Signals, and Paging
 
@@ -216,7 +217,7 @@ Additions:
 
 ---
 
-VERSION: TOS-9
+VERSION: TOS 3.0
 Status:   Visionary Milestone
 Goal:     SMP networking, packages
 
@@ -231,9 +232,9 @@ Additions:
 VERSIONING POLICY
 --------------------------
 
-• TOS-7: development and research track  
-• TOS-8: stable ABI release for userland compatibility  
-• TOS-9 and beyond: maintain minimalism, introduce capability incrementally  
+• TOS 1.0: development and research track  
+• TOS 2.0: stable ABI release for userland compatibility  
+• TOS 3.0 and beyond: maintain minimalism, introduce capability incrementally
 • Syscall table is append-only, compatible with FreeBSD ABI numbers
 
 --------------------------
