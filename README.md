@@ -108,8 +108,20 @@ All device I/O is synchronous and buffered within the kernel
 SCHEDULER
 --------------------------
 
-TOS supports preemptive multithreading, using a fixed-priority, multi-class
-scheduler.
+The TOS-7 kernel scheduler is a modular, priority-based preemptive system  
+inspired by traditional UNIX designs. It uses per-priority run queues       
+similar to Solaris’s time-sharing (TS) class. Like Solaris, it supports     
+multiple scheduling classes with pluggable behavior.                        
+
+The kernel adjusts priorities dynamically based on CPU usage, promoting     
+fairness and responsiveness. Time slices are used to control how long a     
+thread can run, echoing Solaris’s approach. An interactive boost mechanism  
+temporarily raises priority for latency-sensitive tasks, much like          
+Solaris’s interactivity handling.                                           
+
+The scheduler appears to support kernel preemption, though in a more        
+simplified form than Solaris. Overall, the design balances simplicity with  
+classic UNIX/Solaris-style flexibility.                                     
 
 There are three classes:
 
