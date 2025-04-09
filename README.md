@@ -1,9 +1,9 @@
-#TOS-7
+# TOS 1.0
 
 UNIX-inspired operating system with a focus on clarity, static linkage, 
 manual simplicity, and research-grade transparency.
 
-TOS-7 is not a clone, nor a reimplementation — it is a new UNIX-like 
+TOS is not a clone, nor a reimplementation — it is a new UNIX-like 
 kernel and userland created in the spirit of V6, V7, and Research V10, 
 reborn with modern toolchains and retro engineering intent.
 
@@ -17,7 +17,7 @@ The system is composed of the following primary components:
     - Device I/O
     - Initialization and Boot Procedure
 
-TOS-7 is a reaction to complexity.
+TOS is a reaction to complexity.
 It is a statement that clarity still matters.
 
 - All modules are written in C89-compatible style.
@@ -57,7 +57,7 @@ system timer (scheduler tick).
 MEMORY MANAGEMENT
 --------------------------
 
-TOS-7 uses a page-table based MMU design.
+TOS uses a page-table based MMU design.
 
     - Kernel heap is allocated via `kmalloc.c`
     - User space memory via `mmap()`
@@ -107,7 +107,7 @@ All device I/O is synchronous and buffered within the kernel
 SCHEDULER
 --------------------------
 
-TOS-7 supports preemptive multithreading, using a fixed-priority, multi-class
+TOS supports preemptive multithreading, using a fixed-priority, multi-class
 scheduler.
 
 There are three classes:
