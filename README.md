@@ -358,43 +358,49 @@ Philosophy: Simplicity is the ultimate sophistication.
 - [ ] Make all trap handlers reentrant
 - [ ] Use consistent naming (`sys_`, `vfs_`, `proc_`)
 
+```markdown
 TOS-7/
 └── usr/
     └── src/
         └── sys/
             ├── arch/
-            │   ├── arm64/
+            │   ├── arm64/                     # Architecture-specific code for ARM64 CPUs
             │   └── board/
-            │       └── rpi4/
-            ├── dev/
+            │       └── rpi4/                  # Hardware support for Raspberry Pi 4
+            ├── dev/                           # Device drivers (empty or placeholder)
             ├── fs/
-            ├── include/
+            │   ├── ext2/                      # EXT2 filesystem implementation
+            │   ├── devfs.h                    # Device filesystem header
+            │   ├── vfs.c                      # Virtual filesystem layer implementation
+            │   └── vfs.h                      # Header for the VFS interface
+            ├── include/                       # Shared header files
             ├── kernel/
-            │   ├── init.c
-            │   ├── panic.c
-            │   └── start.c
-            ├── libk/
+            │   ├── init.c                     # Kernel initialization during boot
+            │   ├── panic.c                    # Kernel panic and fatal error handling
+            │   └── start.c                    # Kernel entry point and low-level setup
+            ├── libk/                          # Kernel utility library (empty or placeholder)
             ├── process/
-            │   ├── context.c
-            │   ├── exec.c
-            │   ├── pid.c
-            │   ├── process.c
-            │   └── signal.c
+            │   ├── context.c                  # Context switching logic for tasks
+            │   ├── exec.c                     # Executing binaries (process launch)
+            │   ├── pid.c                      # PID allocation and management
+            │   ├── process.c                  # Core process creation and control
+            │   └── signal.c                   # Signal handling, likely POSIX-like
             ├── scheduler/
-            │   ├── README.md
-            │   ├── control.c
-            │   ├── lock.c
-            │   ├── queue.c
-            │   ├── rt.c
-            │   ├── sched_class.h
-            │   ├── scheduler.c
-            │   ├── scheduler.h
-            │   ├── sleep.c
-            │   ├── thread.c
-            │   └── tickless.c
-            ├── syscall/
+            │   ├── README.md                  # Documentation for the scheduler
+            │   ├── control.c                  # Control interface and context switching
+            │   ├── lock.c                     # Locking and synchronization primitives
+            │   ├── queue.c                    # Run queue and scheduling queue logic
+            │   ├── rt.c                       # Real-time scheduling class implementation
+            │   ├── sched_class.h              # Header defining scheduling class interfaces
+            │   ├── scheduler.c                # Core logic for thread scheduling
+            │   ├── scheduler.h                # Scheduler interface and configuration
+            │   ├── sleep.c                    # Sleep/wait management for threads
+            │   ├── thread.c                   # Thread lifecycle and management
+            │   └── tickless.c                 # Tickless scheduling for low-power idle
+            ├── syscall/                       # System call handling (empty or placeholder)
             ├── vm/
-            │   ├── kmalloc.c
-            │   ├── pmm.c
-            │   └── vmm.c
-            └── trap_handle.c
+            │   ├── kmalloc.c                  # Basic heap-based dynamic memory allocator
+            │   ├── pmm.c                      # Physical Memory Manager
+            │   └── vmm.c                      # Virtual Memory Manager
+            └── trap_handle.c                  # Interrupt and exception handling logic
+```
