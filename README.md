@@ -1,4 +1,4 @@
-# TOS 1.0
+# TOS
 
 UNIX-inspired operating system with a focus on clarity, static linkage, 
 manual simplicity, and research-grade transparency.
