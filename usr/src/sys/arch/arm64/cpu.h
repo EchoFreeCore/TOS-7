@@ -18,6 +18,13 @@ void cpu_enter_user(uint64_t user_sp, uint64_t entry_pc);
 int  this_cpu(void);
 
 // ====================================
+// Timer
+// ====================================
+void cpu_timer_init(uint64_t freq_hz);
+void cpu_timer_set_next_event(uint64_t ticks);
+uint64_t cpu_timer_current(void);
+
+// ====================================
 // MMU Control
 // ====================================
 void mmu_enable(void);
